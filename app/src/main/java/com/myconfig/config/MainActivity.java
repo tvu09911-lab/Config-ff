@@ -7,6 +7,7 @@ import android.widget.TextView;
 import rikka.shizuku.Shizuku;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 
 public class MainActivity extends Activity {
 
@@ -59,6 +60,13 @@ public class MainActivity extends Activity {
         });
     }
 
+    private Process newShizukuProcess(String[] cmd) throws Exception {
+        Method method = Shizuku.class.getDeclaredMethod(
+                "newProcess", String[].class, String[].class, String.class);
+        method.setAccessible(true);
+        return (Process) method.invoke(null, cmd, null, null);
+    }
+
     private void runCommand(String command, String successLabel) {
         if (!Shizuku.pingBinder()) {
             resultText.setText("Shizuku chưa chạy. Mở app Shizuku trước.");
@@ -69,7 +77,7 @@ public class MainActivity extends Activity {
             return;
         }
         try {
-            Process process = Shizuku.newProcess(new String[]{"sh", "-c", command}, null, null);
+            Process process = newShizukuProcess(new String[]{"sh", "-c", command});
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder output = new StringBuilder();
             String line;
