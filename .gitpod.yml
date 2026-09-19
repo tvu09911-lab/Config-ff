@@ -1,0 +1,19 @@
+image: gitpod/workspace-full
+
+tasks:
+  - init: |
+      sdk install java 17.0.9-tem
+      sdk default java 17.0.9-tem
+      mkdir -p $HOME/android-sdk/cmdline-tools
+      cd $HOME/android-sdk/cmdline-tools
+      curl -o tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+      unzip -q tools.zip
+      mv cmdline-tools latest
+      echo 'export ANDROID_HOME=$HOME/android-sdk' >> ~/.bashrc
+      echo 'export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/34.0.0' >> ~/.bashrc
+      export ANDROID_HOME=$HOME/android-sdk
+      export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+      yes | sdkmanager --licenses > /dev/null
+      sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null
+      sdk install gradle 8.4
+      echo "=== Môi trường đã sẵn sàng. Gõ: gradle assembleDebug để build APK ==="
